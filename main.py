@@ -1,19 +1,27 @@
-import math, random, pygame, PIL, pydub, pytweening, scipy, dearpygui
+import math, random, pygame, PIL,  pydub, pytweening, scipy, dearpygui
+
+pygame.init()
 
 # Image loading
 player_image = pygame.image.load('player.png')
-pygame.convert_alpha(player_image)
 player_image = pygame.transform.scale(player_image, (50, 50))
 enemy_image = pygame.image.load('enemy.png')
-pygame.convert_alpha(enemy_image)
+enemy_image = pygame.transform.scale(enemy_image, (50, 50))
+map_image = pygame.image.load('map.png')
 enemy_image = pygame.transform.scale(enemy_image, (50, 50))
 
 # Classes and definitions
+class map:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.sprite = pygame.image.load('map.png')
+        
 class player:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.speed = 5
+        self.speed = 10
         self.health = 100
         self.damage = 10
         self.sprite = pygame.image.load('player.png')
@@ -27,6 +35,9 @@ class player:
             self.x -= self.speed
         elif direction == 'right':
             self.x += self.speed
+            if self.x <= 0:
+                self.x == 0
+        
 
     def attack(self, enemy):
         enemy.health -= self.damage
@@ -62,7 +73,6 @@ class enemy:
 player = player(0, 0)
 enemy = enemy(100, 0)
 clock = pygame.time.Clock()
-pygame.init()
 screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption('Game')
 
@@ -87,6 +97,7 @@ while running == True:
                 player.attack(enemy)
 
     screen.fill((0, 0, 0)) # Redraw background
+    screen.blit(map.sprite, (map.x, map.y)) # Draw map
     screen.blit(player.sprite, (player.x, player.y)) # Draw player
     screen.blit(enemy.sprite, (enemy.x, enemy.y)) # Draw enemy
     clock.tick(240) # Set FPS
